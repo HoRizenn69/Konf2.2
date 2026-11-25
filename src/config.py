@@ -59,6 +59,11 @@ def _add_mode_args(parser):
         action="store_true",
         help="Только прямые зависимости (этап 2)",
     )
+    parser.add_argument(
+        "--load-order",
+        action="store_true",
+        help="Порядок загрузки зависимостей (этап 4)",
+    )
 
 
 def _fail(message):
@@ -165,6 +170,7 @@ def print_config(args):
     print(f"output={args.output}")
     print(f"filter={args.filter}")
     print(f"direct_only={args.direct_only}")
+    print(f"load_order={args.load_order}")
     print("================================")
 
 

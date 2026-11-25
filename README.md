@@ -1,30 +1,23 @@
-# Cargo dependency graph — stage 3
+# Cargo dependency graph — stage 5 (full)
 
-Variant 16. Practice 2. Based on accepted Konf2.2 + **stage 3**.
+Variant 16. Konf2.2 base + stages 3–5.
 
-## What stage 3 does
+## Stages
 
-- BFS graph (no recursion), transitive deps
-- `--filter` skips packages by substring
-- Cycles: no hang, prints `cycle: yes/no`
-- `--test-mode` + file `fixtures/*.txt` (names `A`, `B`, …)
-
-Stage 2 still works: add `--direct-only`.  
-Stage 1: add `--print-config`.
-
-## Options (required unless noted)
-
-| Option | Meaning |
+| Stage | How to run |
 | --- | --- |
-| `--package` | Crate name |
-| `--repo` | `https://crates.io/api/v1` or path to test file |
-| `--output` | File name `graph.svg` or `out.png` (no folders) |
-| `--test-mode` | Use test graph file |
-| `--filter` | Optional substring filter |
-| `--direct-only` | Stage 2 only |
-| `--print-config` | Stage 1 only |
+| 1 | `--print-config` |
+| 2 | `--direct-only` |
+| 3 | BFS graph (same collection as 4–5; use tests) |
+| 4 | `--load-order` |
+| 5 | default (no extra flag) |
 
-There is **no** `--path` flag — use **`--repo`**.
+Stage 5: **PlantUML** on stdout plus files in `output/`:
+`<stem>.puml` and the image from `--output` (e.g. `out.svg`).
+
+Required options: `--package`, `--repo`, `--output`.
+
+There is no `--path` — use `--repo`.
 
 ## Windows
 
@@ -33,37 +26,41 @@ cd /d path\to\david-konfigs
 run.bat
 ```
 
-Manual test (no internet):
+Stage 5 (test file):
 
 ```bat
 set PYTHONPATH=.
 py -3 -m src.main --package A --repo fixtures\repo_simple.txt --output out.svg --test-mode
 ```
 
-Stage 2:
+Stage 4:
 
 ```bat
-py -3 -m src.main --package serde --repo https://crates.io/api/v1 --output graph.svg --direct-only
+py -3 -m src.main --package A --repo fixtures\repo_simple.txt --output order.svg --test-mode --load-order
 ```
 
-PyCharm Parameters example:
+Three crates for stage 5 (needs network):
 
-```text
---package A --repo fixtures/repo_simple.txt --output out.svg --test-mode
+```bat
+run.bat serde
+run.bat cfg-if
+run.bat log
 ```
 
-Working directory = project folder. Environment: `PYTHONPATH=.`
-
-## Example output
+## Example load order (package A)
 
 ```text
-=== Dependency graph: A ===
-A -> B
-A -> C
-B -> D
-C -> D
---- nodes ---
-A, B, C, D
-cycle: no
+=== Load order: A ===
+1. D
+2. B
+3. C
+4. A
 ==========================
 ```
+
+## vs `cargo tree`
+
+`cargo` uses lockfile, features, and target OS.
+This tool uses crates.io `normal` deps and a simple
+topological order from the BFS graph. Order and set
+can differ.

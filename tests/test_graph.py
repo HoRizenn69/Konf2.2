@@ -9,7 +9,7 @@ ROOT = os.path.abspath(
 )
 sys.path.insert(0, ROOT)
 
-from src.graph import (  # noqa: E402
+from src.graph import (
     build_graph_bfs,
     has_cycle,
     load_order,

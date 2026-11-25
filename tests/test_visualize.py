@@ -10,7 +10,7 @@ ROOT = os.path.abspath(
 )
 sys.path.insert(0, ROOT)
 
-from src.visualize import (  # noqa: E402
+from src.visualize import (
     save_artifacts,
     to_plantuml,
     to_svg,

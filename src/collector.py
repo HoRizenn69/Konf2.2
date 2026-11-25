@@ -5,6 +5,7 @@ import sys
 from src.cargo import fetch_cargo_deps
 from src.constants import EMPTY_COUNT, EXIT_ERROR
 from src.graph import build_graph_bfs, has_cycle
+from src.visualize import save_artifacts, to_plantuml, to_svg
 
 
 def collect_direct_deps(args):
@@ -41,25 +42,38 @@ def print_deps(deps, package=""):
     print("==========================")
 
 
-def print_graph(adjacency, edges, package, cycle):
-    """Print BFS graph edges and cycle note."""
-    print(f"=== Dependency graph: {package} ===")
-    if len(edges) == EMPTY_COUNT:
-        print("(no edges)")
-    else:
-        for src, dst in edges:
-            print(f"{src} -> {dst}")
-    print("--- nodes ---")
-    nodes = sorted(adjacency.keys())
-    if len(nodes) == EMPTY_COUNT:
+def print_load_order(order, package):
+    """Print load order for stage 4."""
+    print(f"=== Load order: {package} ===")
+    if len(order) == EMPTY_COUNT:
         print("(none)")
     else:
-        print(", ".join(nodes))
-    if cycle:
-        print("cycle: yes")
-    else:
-        print("cycle: no")
+        for index, name in enumerate(order, 1):
+            print(f"{index}. {name}")
     print("==========================")
+
+
+def save_graph_visualization(
+    adjacency,
+    edges,
+    root,
+    output,
+    cycle,
+):
+    """Print PlantUML and write .puml + .svg under output/."""
+    plantuml = to_plantuml(edges, root)
+    print("=== PlantUML ===")
+    print(plantuml)
+    svg_text = to_svg(adjacency, root)
+    puml_path, svg_path = save_artifacts(
+        output,
+        plantuml,
+        svg_text,
+    )
+    print(f"PlantUML saved: {puml_path}")
+    print(f"SVG saved: {svg_path}")
+    if cycle:
+        print("Note: cycle detected in graph")
 
 
 def _root_name(args):

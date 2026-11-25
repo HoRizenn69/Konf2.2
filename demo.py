@@ -1,4 +1,4 @@
-"""Demo for stage 3: BFS graph, filter, cycles."""
+"""Demo for stages 4–5: load order and PlantUML/SVG."""
 
 import os
 import subprocess
@@ -92,9 +92,9 @@ def _sources_ok():
 
 
 def _test_repo_cases():
-    """Stage 3 on local test files."""
+    """Stage 4 and 5 on local test files."""
     run_case(
-        "TEST: simple A",
+        "TEST: simple A (PlantUML/SVG)",
         [
             "--package",
             "A",
@@ -103,6 +103,19 @@ def _test_repo_cases():
             "--output",
             "out.svg",
             "--test-mode",
+        ],
+    )
+    run_case(
+        "TEST: simple A (load-order)",
+        [
+            "--package",
+            "A",
+            "--repo",
+            "fixtures/repo_simple.txt",
+            "--output",
+            "order.svg",
+            "--test-mode",
+            "--load-order",
         ],
     )
     run_case(
@@ -118,7 +131,7 @@ def _test_repo_cases():
         ],
     )
     run_case(
-        "TEST: filter XX",
+        "TEST: filter XX (load-order)",
         [
             "--package",
             "A",
@@ -129,6 +142,7 @@ def _test_repo_cases():
             "--test-mode",
             "--filter",
             "XX",
+            "--load-order",
         ],
     )
 
@@ -171,7 +185,7 @@ def _show_packages(names):
 
 
 def main():
-    """Entry point for stage 3 demo."""
+    """Entry point for stage 5 demo."""
     enable_stdio()
     if _has_packages():
         return _show_packages(sys.argv[1:])

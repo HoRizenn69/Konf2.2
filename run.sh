@@ -6,7 +6,7 @@ export PYTHONPATH="."
 CRATES="https://crates.io/api/v1"
 PY="python3 -m src.main"
 
-echo "=== TEST: simple graph ==="
+echo "=== TEST: simple PlantUML/SVG ==="
 $PY --package A \
   --repo fixtures/repo_simple.txt \
   --output out.svg \
@@ -24,6 +24,20 @@ $PY --package A \
   --output filter.svg \
   --test-mode \
   --filter XX
+
+echo "=== TEST: load-order simple ==="
+$PY --package A \
+  --repo fixtures/repo_simple.txt \
+  --output order.svg \
+  --test-mode \
+  --load-order
+
+echo "=== TEST: load-order cycle ==="
+$PY --package A \
+  --repo fixtures/repo_cycle.txt \
+  --output order.svg \
+  --test-mode \
+  --load-order
 
 echo "=== TEST: crates.io cfg-if ==="
 $PY --package cfg-if --repo "$CRATES" --output graph.svg
