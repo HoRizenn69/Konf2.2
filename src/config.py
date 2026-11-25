@@ -68,8 +68,19 @@ def _add_mode_args(parser):
 
 def _fail(message):
     """Печатает ошибку и завершает процесс."""
-    print(f"Ошибка: {message}", file=sys.stderr)
+    _write_error(f"Ошибка: {message}")
     sys.exit(EXIT_ERROR)
+
+
+def _write_error(text):
+    """Пишет строку в stderr, не падая на кодировке консоли."""
+    line = text + "\n"
+    try:
+        sys.stderr.write(line)
+        sys.stderr.flush()
+    except UnicodeEncodeError:
+        data = line.encode("utf-8", "replace")
+        sys.stderr.buffer.write(data)
 
 
 def validate_config(args):
@@ -95,6 +106,7 @@ def validate_config(args):
     _validate_output_name(output)
 
     if args.test_mode:
+        repo = _locate_test_repo(repo)
         _validate_test_repo(repo, package)
     else:
         _validate_url(repo)
@@ -119,6 +131,49 @@ def _validate_output_name(output):
             "файл вывода должен иметь расширение "
             ".svg или .png"
         )
+
+
+def _project_root():
+    """Каталог проекта (родитель пакета src)."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    return os.path.dirname(here)
+
+
+def _locate_test_repo(path):
+    """Ищет файл тестового репозитория и возвращает путь."""
+    for candidate in _repo_candidates(path):
+        if os.path.isfile(candidate):
+            return candidate
+    return path
+
+
+def _repo_candidates(path):
+    """Варианты пути: как есть, со слэшами и от корня проекта."""
+    raw = path.strip()
+    folded = raw.replace("\\", "/")
+    names = [raw, folded, _repair_fixture(folded)]
+    root = _project_root()
+    found = []
+    for name in names:
+        if len(name) == EMPTY_COUNT:
+            continue
+        found.append(name)
+        found.append(os.path.join(root, name))
+    return found
+
+
+def _repair_fixture(folded):
+    """Восстанавливает fixtures/..., если слэш съел Git Bash."""
+    compact = folded.replace("/", "")
+    known = (
+        "fixtures/repo_simple.txt",
+        "fixtures/repo_cycle.txt",
+        "fixtures/repo_filter.txt",
+    )
+    for name in known:
+        if name.replace("/", "") == compact:
+            return name
+    return ""
 
 
 def _validate_test_repo(path, package):

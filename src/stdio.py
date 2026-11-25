@@ -9,10 +9,8 @@ from src.constants import EMPTY_COUNT
 
 def enable_stdio():
     """Настраивает stdout и stderr под текущую консоль."""
-    if hasattr(sys.stdout, "reconfigure"):
-        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    if hasattr(sys.stderr, "reconfigure"):
-        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    _reconfigure(sys.stdout, "utf-8")
+    _reconfigure(sys.stderr, "utf-8")
 
 
 def output_encoding():

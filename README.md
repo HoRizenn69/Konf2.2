@@ -26,17 +26,28 @@ cd /d path\to\david-konfigs
 run.bat
 ```
 
-Stage 5 (test file):
-
-```bat
-set PYTHONPATH=.
-py -3 -m src.main --package A --repo fixtures\repo_simple.txt --output out.svg --test-mode
-```
+Stage 4 and 5 from the project folder. In Git Bash use
+forward slashes and start with `python` (flags alone are
+not a command).
 
 Stage 4:
 
+```bash
+python -m src.main --package A --repo fixtures/repo_simple.txt --output order.svg --test-mode --load-order
+```
+
+Stage 5:
+
+```bash
+python -m src.main --package A --repo fixtures/repo_simple.txt --output out.svg --test-mode
+```
+
+cmd.exe (either slash works):
+
 ```bat
-py -3 -m src.main --package A --repo fixtures\repo_simple.txt --output order.svg --test-mode --load-order
+set PYTHONPATH=.
+py -3 -m src.main --package A --repo fixtures/repo_simple.txt --output order.svg --test-mode --load-order
+py -3 -m src.main --package A --repo fixtures/repo_simple.txt --output out.svg --test-mode
 ```
 
 Three crates for stage 5 (needs network):

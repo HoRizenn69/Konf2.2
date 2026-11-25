@@ -141,6 +141,22 @@ class TestConfig(unittest.TestCase):
         with self.assertRaises(SystemExit):
             validate_config(args)
 
+    def test_git_bash_eaten_slash(self):
+        """Путь fixtures\\repo без слэша всё ещё находится."""
+        args = _parse(
+            [
+                "--package",
+                "A",
+                "--repo",
+                "fixturesrepo_simple.txt",
+                "--output",
+                "graph.svg",
+                "--test-mode",
+            ]
+        )
+        ready = validate_config(args)
+        self.assertTrue(os.path.isfile(ready.repo))
+
     def test_test_mode_requires_file(self):
         """Ошибка, если тестовый файл не существует."""
         args = _parse(

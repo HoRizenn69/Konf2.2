@@ -91,6 +91,7 @@ def _make_getter(args):
     repo = args.repo
 
     def get_deps(name):
+        """Имена прямых зависимостей одного crate."""
         return _cargo_names(repo, name)
 
     return get_deps
@@ -173,5 +174,7 @@ def _add_test_line(graph, raw):
 
 def _fail(message):
     """Print error and exit."""
-    print(f"Ошибка: {message}", file=sys.stderr)
+    from src.config import _write_error
+
+    _write_error(f"Ошибка: {message}")
     sys.exit(EXIT_ERROR)
