@@ -1,0 +1,5 @@
+# Filter demo: skip packages with XX in the name
+A: B XXC
+B: D
+XXC: D
+D:

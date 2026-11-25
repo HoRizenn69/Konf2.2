@@ -1,0 +1,15 @@
+"""Именованные константы вместо магических чисел."""
+
+EXIT_OK = 0
+EXIT_ERROR = 1
+HTTP_OK = 200
+HTTP_NOT_FOUND = 404
+HTTP_TIMEOUT_SEC = 30
+EMPTY_COUNT = 0
+KIND_NORMAL = "normal"
+SVG_NODE_WIDTH = 120
+SVG_NODE_HEIGHT = 40
+SVG_GAP_X = 40
+SVG_GAP_Y = 60
+SVG_PAD = 20
+OUTPUT_DIR = "output"

@@ -1,0 +1,41 @@
+{
+  "dependencies": [
+    {
+      "crate_id": "serde_core",
+      "req": "=1.0.229",
+      "kind": "normal",
+      "optional": false
+    },
+    {
+      "crate_id": "serde_derive",
+      "req": "^1",
+      "kind": "normal",
+      "optional": true
+    },
+    {
+      "crate_id": "serde",
+      "req": "^1",
+      "kind": "dev",
+      "optional": false
+    },
+    {
+      "crate_id": "proc-macro2",
+      "req": "^1",
+      "kind": "build",
+      "optional": false
+    },
+    {
+      "crate_id": "libc",
+      "req": "^0.2",
+      "kind": "normal",
+      "optional": false,
+      "target": "cfg(unix)"
+    },
+    {
+      "crate_id": "serde_core",
+      "req": "=1.0.229",
+      "kind": "normal",
+      "optional": false
+    }
+  ]
+}
