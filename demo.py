@@ -94,6 +94,19 @@ def _sources_ok():
 def _test_repo_cases():
     """Stage 4 and 5 on local test files."""
     run_case(
+        "TEST: simple A (print-graph)",
+        [
+            "--package",
+            "A",
+            "--repo",
+            "fixtures/repo_simple.txt",
+            "--output",
+            "out.svg",
+            "--test-mode",
+            "--print-graph",
+        ],
+    )
+    run_case(
         "TEST: simple A (PlantUML/SVG)",
         [
             "--package",

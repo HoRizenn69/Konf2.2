@@ -60,6 +60,11 @@ def _add_mode_args(parser):
         help="Только прямые зависимости (этап 2)",
     )
     parser.add_argument(
+        "--print-graph",
+        action="store_true",
+        help="Текстовый граф зависимостей (этап 3)",
+    )
+    parser.add_argument(
         "--load-order",
         action="store_true",
         help="Порядок загрузки зависимостей (этап 4)",
@@ -225,6 +230,7 @@ def print_config(args):
     print(f"output={args.output}")
     print(f"filter={args.filter}")
     print(f"direct_only={args.direct_only}")
+    print(f"print_graph={args.print_graph}")
     print(f"load_order={args.load_order}")
     print("================================")
 

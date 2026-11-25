@@ -6,6 +6,13 @@ export PYTHONPATH="."
 CRATES="https://crates.io/api/v1"
 PY="python3 -m src.main"
 
+echo "=== TEST: print-graph simple ==="
+$PY --package A \
+  --repo fixtures/repo_simple.txt \
+  --output out.svg \
+  --test-mode \
+  --print-graph
+
 echo "=== TEST: simple PlantUML/SVG ==="
 $PY --package A \
   --repo fixtures/repo_simple.txt \

@@ -11,8 +11,10 @@ sys.path.insert(0, ROOT)
 
 from src.graph import (
     build_graph_bfs,
+    find_cycle_edges,
     has_cycle,
     load_order,
+    print_graph,
     should_skip,
 )
 
@@ -84,6 +86,20 @@ class TestGraph(unittest.TestCase):
         self.assertEqual(len(adjacency), 3)
         self.assertIn(("C", "A"), edges)
         self.assertTrue(has_cycle(adjacency))
+        cycles = find_cycle_edges(adjacency)
+        self.assertIn(("C", "A"), cycles)
+
+    def test_print_graph_format(self):
+        """Stage 3 text matches adjacency listing."""
+        from unittest import mock
+
+        with mock.patch("builtins.print") as mocked:
+            print_graph(self.repo, [])
+        joined = "\n".join(
+            str(call) for call in mocked.call_args_list
+        )
+        self.assertIn("=== Граф зависимостей ===", joined)
+        self.assertIn("A -> B, C", joined)
 
 
 if __name__ == "__main__":

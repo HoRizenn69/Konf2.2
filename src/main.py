@@ -10,7 +10,7 @@ from src.collector import (
     save_graph_visualization,
 )
 from src.config import load_config, print_config, success_code
-from src.graph import load_order
+from src.graph import load_order, print_graph
 from src.stdio import enable_stdio
 
 
@@ -25,18 +25,22 @@ def main(argv=None):
         deps = collect_direct_deps(args)
         print_deps(deps, args.package)
         return success_code()
-    adjacency, edges, cycle = collect_graph(args)
+    adjacency, edges, cycles = collect_graph(args)
     root = _graph_root(args)
     if args.load_order:
         order = load_order(adjacency, root)
         print_load_order(order, args.package)
         return success_code()
+    if args.print_graph:
+        print_graph(adjacency, cycles)
+        return success_code()
+    print_graph(adjacency, cycles)
     save_graph_visualization(
         adjacency,
         edges,
         root,
         args.output,
-        cycle,
+        cycles,
     )
     return success_code()
 

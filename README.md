@@ -8,9 +8,9 @@ Variant 16. Konf2.2 base + stages 3–5.
 | --- | --- |
 | 1 | `--print-config` |
 | 2 | `--direct-only` |
-| 3 | BFS graph (same collection as 4–5; use tests) |
+| 3 | `--print-graph` |
 | 4 | `--load-order` |
-| 5 | default (no extra flag) |
+| 5 | default (graph text + PlantUML/SVG) |
 
 Stage 5: **PlantUML** on stdout plus files in `output/`:
 `<stem>.puml` and the image from `--output` (e.g. `out.svg`).
@@ -19,44 +19,75 @@ Required options: `--package`, `--repo`, `--output`.
 
 There is no `--path` — use `--repo`.
 
-## Windows
+## Windows (cmd.exe)
+
+Open **cmd**, not Git Bash. `python` alone only prints
+**Python** (Store alias) — always run the module via
+`py -3` or `cli.bat`.
 
 ```bat
-cd /d path\to\david-konfigs
+cd /d D:\konf2.3
+```
+
+Full demo + unit tests:
+
+```bat
 run.bat
 ```
 
-Stage 4 and 5 from the project folder. In Git Bash use
-forward slashes and start with `python` (flags alone are
-not a command).
+Stage 3:
+
+```bat
+stage3.bat
+```
+
+or:
+
+```bat
+cli.bat --package A --repo fixtures\repo_simple.txt --output out.svg --test-mode --print-graph
+```
 
 Stage 4:
 
-```bash
-python -m src.main --package A --repo fixtures/repo_simple.txt --output order.svg --test-mode --load-order
+```bat
+stage4.bat
+```
+
+or:
+
+```bat
+cli.bat --package A --repo fixtures\repo_simple.txt --output order.svg --test-mode --load-order
 ```
 
 Stage 5:
 
-```bash
-python -m src.main --package A --repo fixtures/repo_simple.txt --output out.svg --test-mode
+```bat
+stage5.bat
 ```
 
-cmd.exe (either slash works):
+or:
 
 ```bat
-set PYTHONPATH=.
-py -3 -m src.main --package A --repo fixtures/repo_simple.txt --output order.svg --test-mode --load-order
-py -3 -m src.main --package A --repo fixtures/repo_simple.txt --output out.svg --test-mode
+cli.bat --package A --repo fixtures\repo_simple.txt --output out.svg --test-mode
 ```
 
-Three crates for stage 5 (needs network):
+Stage 1 / 2 examples:
 
 ```bat
-run.bat serde
-run.bat cfg-if
-run.bat log
+cli.bat --package serde --repo https://crates.io/api/v1 --output x.svg --print-config
+cli.bat --package serde --repo https://crates.io/api/v1 --output x.svg --direct-only
 ```
+
+Three crates for stage 5 (network):
+
+```bat
+cli.bat --package serde --repo https://crates.io/api/v1 --output graph.svg
+cli.bat --package cfg-if --repo https://crates.io/api/v1 --output graph.svg
+cli.bat --package log --repo https://crates.io/api/v1 --output graph.svg
+```
+
+If `py` is missing, `cli.bat` falls back to `python -m`.
+Do not type only `--package ...` — that is not a command.
 
 ## Example load order (package A)
 

@@ -4,7 +4,7 @@ import sys
 
 from src.cargo import fetch_cargo_deps
 from src.constants import EMPTY_COUNT, EXIT_ERROR
-from src.graph import build_graph_bfs, has_cycle
+from src.graph import build_graph_bfs, find_cycle_edges
 from src.visualize import save_artifacts, to_plantuml, to_svg
 
 
@@ -18,7 +18,7 @@ def collect_direct_deps(args):
 def collect_graph(args):
     """Build transitive graph (BFS) for CLI args.
 
-    Returns (adjacency, edges, cycle_flag).
+    Returns (adjacency, edges, cycle_edges).
     """
     get_deps = _make_getter(args)
     root = _root_name(args)
@@ -27,8 +27,8 @@ def collect_graph(args):
         get_deps,
         args.filter,
     )
-    cycle = has_cycle(adjacency)
-    return adjacency, edges, cycle
+    cycles = find_cycle_edges(adjacency)
+    return adjacency, edges, cycles
 
 
 def print_deps(deps, package=""):
@@ -58,7 +58,7 @@ def save_graph_visualization(
     edges,
     root,
     output,
-    cycle,
+    cycles,
 ):
     """Print PlantUML and write .puml + .svg under output/."""
     plantuml = to_plantuml(edges, root)
@@ -72,7 +72,7 @@ def save_graph_visualization(
     )
     print(f"PlantUML saved: {puml_path}")
     print(f"SVG saved: {svg_path}")
-    if cycle:
+    if len(cycles) != EMPTY_COUNT:
         print("Note: cycle detected in graph")
 
 

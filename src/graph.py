@@ -63,50 +63,79 @@ def _filter_deps(deps, filt):
 
 def has_cycle(adjacency):
     """True if the directed graph has a cycle."""
+    edges = find_cycle_edges(adjacency)
+    return len(edges) != EMPTY_COUNT
+
+
+def find_cycle_edges(adjacency):
+    """Return back edges (u, v) found during cycle DFS."""
     color = {}
     for node in adjacency:
         color[node] = COLOR_WHITE
+    found = []
     for start in list(adjacency):
         if color.get(start, COLOR_WHITE) != COLOR_WHITE:
             continue
-        if _dfs_cycle(start, adjacency, color):
-            return True
-    return False
+        _dfs_collect_cycles(start, adjacency, color, found)
+    return found
 
 
-def _dfs_cycle(start, adjacency, color):
-    """Iterative DFS cycle search from start."""
+def print_graph(adjacency, cycles):
+    """Печатает граф зависимостей и найденные циклы."""
+    print("=== Граф зависимостей ===")
+    if len(adjacency) == EMPTY_COUNT:
+        print("(пусто)")
+    else:
+        for node in adjacency:
+            _print_node_edges(node, adjacency[node])
+    print("=========================")
+    _print_cycles(cycles)
+
+
+def _print_node_edges(node, deps):
+    """Печатает исходящие рёбра одного узла."""
+    if len(deps) == EMPTY_COUNT:
+        print(f"{node} ->")
+        return
+    joined = ", ".join(deps)
+    print(f"{node} -> {joined}")
+
+
+def _print_cycles(cycles):
+    """Печатает информацию о циклических зависимостях."""
+    print("=== Циклы ===")
+    if len(cycles) == EMPTY_COUNT:
+        print("(нет)")
+    else:
+        for src, dst in cycles:
+            print(f"{src} -> {dst}")
+    print("=============")
+
+
+def _dfs_collect_cycles(start, adjacency, color, found):
+    """Iterative DFS; append back edges to found."""
     stack = [(start, False)]
     while len(stack) != EMPTY_COUNT:
         node, leaving = stack.pop()
         if leaving:
             color[node] = COLOR_BLACK
             continue
-        if _cycle_at(node, color):
-            return True
         if color.get(node, COLOR_WHITE) == COLOR_BLACK:
             continue
         color[node] = COLOR_GRAY
         stack.append((node, True))
-        if _push_neighbors(node, adjacency, color, stack):
-            return True
-    return False
+        _push_cycle_edges(node, adjacency, color, stack, found)
 
 
-def _cycle_at(node, color):
-    """True if node is currently on the DFS path."""
-    return color.get(node, COLOR_WHITE) == COLOR_GRAY
-
-
-def _push_neighbors(node, adjacency, color, stack):
-    """Push white neighbors; True if gray neighbor seen."""
+def _push_cycle_edges(node, adjacency, color, stack, found):
+    """Push white neighbors; record gray back edges."""
     for dep in adjacency.get(node, []):
         state = color.get(dep, COLOR_WHITE)
         if state == COLOR_GRAY:
-            return True
+            found.append((node, dep))
+            continue
         if state == COLOR_WHITE:
             stack.append((dep, False))
-    return False
 
 
 def load_order(adjacency, root):
